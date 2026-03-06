@@ -805,8 +805,8 @@ body.dark .gallery-header h1 { color:white; }
 .gallery-header p { color:#4b5563; max-width:42rem; margin:0 auto; font-size:1.125rem; }
 body.dark .gallery-header p { color:#9ca3af; }
 .gallery-tabs { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:48px; }
-.gallery-tab { padding:8px 24px; border-radius:9999px; font-size:.875rem; font-weight:500; transition:all .2s; color:#4b5563; position:relative; }
-body.dark .gallery-tab { color:#9ca3af; }
+.gallery-tab { padding:8px 24px; border-radius:9999px; font-size:.875rem; font-weight:500; transition:all .2s; color:#000000; position:relative; }
+body.dark .gallery-tab { color:#ffffff; }
 .gallery-tab:hover { background:rgba(0,0,0,.05); }
 body.dark .gallery-tab:hover { background:rgba(255,255,255,.05); }
 .gallery-tab.active { background:var(--teal); color:white; }
@@ -1013,12 +1013,11 @@ body.dark #step-capture { background: #0d1b2a; }
 .pb-dl-btn { display:flex; align-items:center; gap:8px; padding:11px 22px; border-radius:9999px; background:linear-gradient(135deg,#e91e8c,#f06292); color:white; font-weight:700; font-size:.875rem; border:none; cursor:pointer; font-family:'Poppins',sans-serif; transition:all .2s; box-shadow:0 4px 14px rgba(233,30,140,.3); }
 .pb-dl-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(233,30,140,.4); }
 .pb-dl-btn svg { width:16px; height:16px; }
-.pb-save-btn { display:flex; align-items:center; gap:6px; padding:11px 20px; border-radius:9999px; background:var(--navy); color:white !important; font-weight:700; font-size:.875rem; border:none; cursor:pointer; font-family:'Poppins',sans-serif; transition:all .2s; }
+.pb-save-btn { display:flex; align-items:center; gap:6px; padding:11px 20px; border-radius:9999px; background:var(--navy); color:white; font-weight:700; font-size:.875rem; border:none; cursor:pointer; font-family:'Poppins',sans-serif; transition:all .2s; }
 .pb-save-btn:hover { background:#1a3a5c; }
-.pb-save-btn svg { width:15px; height:15px; color:white !important; }
-.pb-save-btn span { color:white !important; }
+.pb-save-btn svg { width:15px; height:15px; }
 .pb-shot-hint { font-size:.8rem; color:#aaa; font-weight:500; }
-.pb-proceed-btn { padding:12px 28px; border-radius:9999px; background:linear-gradient(135deg,#e91e8c,#f06292); color:white; font-weight:700; font-size:.95rem; border:none; cursor:pointer; font-family:'Poppins',sans-serif; box-shadow:0 4px 16px rgba(233,30,140,.35); transition:all .2s; animation:pulseIn .4s ease; margin-top:20px; }
+.pb-proceed-btn { padding:12px 28px; border-radius:9999px; background:linear-gradient(135deg,#e91e8c,#f06292); color:white; font-weight:700; font-size:.95rem; border:none; cursor:pointer; font-family:'Poppins',sans-serif; box-shadow:0 4px 16px rgba(233,30,140,.35); transition:all .2s; animation:pulseIn .4s ease; }
 .pb-proceed-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(233,30,140,.45); }
 @keyframes pulseIn { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:scale(1); } }
 #page-camera main { padding-top:0 !important; padding-bottom:0 !important; }
@@ -1077,8 +1076,7 @@ body.dark .pb-back-btn:hover { border-color:#e91e8c; color:#e91e8c; }
 body.dark .pb-cust-topbar { border-bottom-color:#334155; }
 body.dark .pb-customize-wrap { background:linear-gradient(135deg,#1a2639,#0f1e2f); }
 body.dark .pb-dl-btn { background:linear-gradient(135deg,#e91e8c,#c2185b); }
-body.dark .pb-save-btn { background:#0f172a; color:white !important; }
-body.dark .pb-save-btn span { color:white !important; }
+body.dark .pb-save-btn { background:#0f172a; }
 body.dark .pb-save-btn:hover { background:#1e293b; }
 body.dark .pb-proceed-btn { background:linear-gradient(135deg,#e91e8c,#c2185b); }
 
@@ -1131,7 +1129,7 @@ body.dark .gallery-header h1 { color:#f1f5f9; }
 body.dark .gallery-header p { color:#94a3b8; }
 body.dark .gallery-empty h3 { color:#f1f5f9; }
 body.dark .gallery-empty p { color:#94a3b8; }
-body.dark .gallery-tab:not(.active) { color:#94a3b8; }
+body.dark .gallery-tab:not(.active) { color:#ffffff; }
 body.dark .frames-header h1 { color:#f1f5f9; }
 body.dark .frames-header p { color:#94a3b8; }
 body.dark .frame-picker-title { color:#f1f5f9; }
