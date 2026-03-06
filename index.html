@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PhotoBooth</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- Custom Styles -->
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="preloader-ring">
+    <div class="preloader-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+      </svg>
+    </div>
+  </div>
+  <h2 class="text-shimmer" style="margin-top:32px;font-size:1.5rem;font-weight:700;letter-spacing:.1em;">Loading Photo Booth...</h2>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#" onclick="navigate('landing');return false;">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <span class="nav-logo-text">Aurora<span>Booth</span></span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#" onclick="navigate('landing');return false;" id="nav-home">Home</a>
+      <div class="nav-dropdown">
+        <a class="nav-link nav-gallery-trigger" href="#" onclick="toggleGalleryDropdown();return false;" id="nav-gallery" style="display:flex;align-items:center;gap:4px;">
+          Gallery
+          <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="nav-dropdown-menu" id="nav-gallery-menu">
+          <button class="nav-dropdown-item" onclick="navigateGallery('All')">All Photos</button>
+          <button class="nav-dropdown-item" onclick="navigateGallery('Nature')">Nature</button>
+          <button class="nav-dropdown-item" onclick="navigateGallery('Portrait')">Portrait</button>
+          <button class="nav-dropdown-item" onclick="navigateGallery('Events')">Events</button>
+          <button class="nav-dropdown-item" onclick="navigateGallery('Fun')">Fun</button>
+        </div>
+      </div>
+      <button class="nav-link" onclick="scrollToSection('plugins-section')">Plugins</button>
+      <button class="nav-link" onclick="scrollToSection('contact')">Contact</button>
+      <button class="dark-toggle" onclick="toggleDark()" aria-label="Toggle Dark Mode" id="dark-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="btn-gradient" style="padding:8px 24px;font-size:.875rem;" href="#" onclick="navigate('camera');return false;">Take Photo</a>
+    </div>
+    <div class="mobile-toggle">
+      <button class="dark-toggle" onclick="toggleDark()" aria-label="Toggle dark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button style="color:var(--light-gray);" onclick="openMobileMenu()">
+        <svg style="width:24px;height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile overlay + menu -->
+<div id="mobile-overlay" onclick="closeMobileMenu()"></div>
+<div id="mobile-menu">
+  <div class="mobile-menu-header">
+    <span style="font-size:1.25rem;font-weight:700;color:white;">Menu</span>
+    <button onclick="closeMobileMenu()" style="color:var(--light-gray);padding:8px;">
+      <svg style="width:24px;height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="mobile-menu-body">
+    <div style="margin-bottom:24px;">
+      <a style="display:block;font-size:1.125rem;font-weight:500;color:white;margin-bottom:16px;" href="#" onclick="navigate('landing');closeMobileMenu();return false;">Home</a>
+    </div>
+    <div style="margin-bottom:24px;">
+      <button style="display:flex;align-items:center;justify-content:space-between;width:100%;font-size:1.125rem;font-weight:500;color:white;margin-bottom:8px;" onclick="toggleMobileGallery()">
+        Gallery
+        <svg id="mobile-gallery-chevron" style="width:18px;height:18px;transition:transform .2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div id="mobile-gallery-submenu" style="display:none;padding-left:16px;border-left:2px solid rgba(0,180,216,.3);display:none;flex-direction:column;gap:12px;">
+        <button style="text-align:left;color:rgba(248,249,250,.8);font-size:.875rem;" onclick="navigateGallery('All');closeMobileMenu();">All Photos</button>
+        <button style="text-align:left;color:rgba(248,249,250,.8);font-size:.875rem;" onclick="navigateGallery('Nature');closeMobileMenu();">Nature</button>
+        <button style="text-align:left;color:rgba(248,249,250,.8);font-size:.875rem;" onclick="navigateGallery('Portrait');closeMobileMenu();">Portrait</button>
+        <button style="text-align:left;color:rgba(248,249,250,.8);font-size:.875rem;" onclick="navigateGallery('Events');closeMobileMenu();">Events</button>
+        <button style="text-align:left;color:rgba(248,249,250,.8);font-size:.875rem;" onclick="navigateGallery('Fun');closeMobileMenu();">Fun</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);">
+      <button style="text-align:left;font-size:1.125rem;font-weight:500;color:white;" onclick="scrollToSection('plugins-section');closeMobileMenu();">Plugins / Components</button>
+      <button style="text-align:left;font-size:1.125rem;font-weight:500;color:white;" onclick="scrollToSection('contact');closeMobileMenu();">Contact</button>
+    </div>
+    <!-- Mobile Scrollspy -->
+   
+  </div>
+  <div class="mobile-menu-footer">
+    <a class="btn-gradient" style="display:block;padding:16px;text-align:center;font-size:1.125rem;" href="#" onclick="navigate('camera');closeMobileMenu();return false;">Take Photo</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     LANDING PAGE
+═══════════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+  <main>
+
+    <!-- HERO -->
+    <section id="hero">
+      <div class="hero-bg" id="hero-bg"></div>
+      <div class="hero-inner">
+        <div style="flex:1;text-align:center;" class="hero-text-col">
+          <div class="hero-badge">
+            <span class="dot animate-pulse"></span>
+            <span>✨ 1000+ Photos Taken Today</span>
+          </div>
+          <h1 class="hero-title">
+            Capture Your <br/>
+            <span class="gradient">Perfect Moment</span>
+          </h1>
+          <p class="hero-desc">Professional photo booth experience with stunning frames, instant downloads, and premium quality. No app required.</p>
+          <div class="hero-btns">
+            <a class="btn-gradient" style="padding:16px 32px;font-size:1.125rem;" href="#" onclick="navigate('camera');return false;">Start Your Experience →</a>
+            <a class="btn-outline" style="padding:16px 32px;font-size:1.125rem;background:rgba(255,255,255,.05);backdrop-filter:blur(8px);" href="#" onclick="navigate('gallery');return false;">View Gallery</a>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;justify-content:center;" class="hero-card-col">
+          <div class="hero-card" style="margin-top:64px;">
+            <div class="hero-card-glow animate-pulse-glow"></div>
+            <div class="glass-dark hero-card-inner" style="border-radius:24px;transform:rotate(3deg);transition:transform .5s;border:1px solid rgba(255,255,255,.1);box-shadow:0 32px 64px rgba(0,0,0,.4);" onmouseover="this.style.transform='rotate(0)'" onmouseout="this.style.transform='rotate(3deg)'">
+              <div class="hero-camera-box" style="padding:0;overflow:hidden;border-radius:8px;">
+                <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;display:block;" poster="https://picsum.photos/seed/photobooth/400/533">
+                  <source src="ggs.mp4" type="video/mp4"/>
+                  <img src="https://picsum.photos/seed/photobooth/400/533" alt="Photo Booth" style="width:100%;height:100%;object-fit:cover;"/>
+                </video>
+                <div class="hero-rec-dot animate-pulse" style="position:absolute;top:16px;right:16px;z-index:5;"></div>
+                <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05),rgba(13,27,42,0.25));pointer-events:none;border-radius:8px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE STRIP (margin-bottom added via CSS for spacing) -->
+    <div class="marquee-strip">
+      <div class="marquee-track animate-marquee" id="marquee-track">
+        <div class="marquee-item"><span>📸 CAPTURE • 🎨 FRAME • ⬇️ DOWNLOAD • 🎉 SHARE • </span></div>
+        <div class="marquee-item"><span>📸 CAPTURE • 🎨 FRAME • ⬇️ DOWNLOAD • 🎉 SHARE • </span></div>
+        <div class="marquee-item"><span>📸 CAPTURE • 🎨 FRAME • ⬇️ DOWNLOAD • 🎉 SHARE • </span></div>
+        <div class="marquee-item"><span>📸 CAPTURE • 🎨 FRAME • ⬇️ DOWNLOAD • 🎉 SHARE • </span></div>
+      </div>
+    </div>
+
+    <!-- ═══ CAROUSEL — ALL CONTENT LEFT-ALIGNED ═══ -->
+    <section id="carousel">
+      <div class="carousel-wrapper" style="position:relative;">
+
+        <!-- Slide 1 -->
+        <div class="carousel-slide active" id="slide-0">
+          <img class="carousel-img" src="large_banner_1.jpg" alt="slide 1" loading="lazy"/>
+          <div class="carousel-overlay" style="background:linear-gradient(to right,rgba(0,180,216,.85),rgba(13,27,42,.92));"></div>
+          <div class="carousel-content">
+            <div class="container">
+              <div class="carousel-text">
+                <div class="carousel-badge"><span>1 / 3</span></div>
+                <h2 class="carousel-title">Capture Memories Instantly</h2>
+                <p class="carousel-desc">Professional-grade webcam capture with countdown timer, flash effects, and mirror mode for the perfect selfie every time.</p>
+                <a class="carousel-cta" href="#" onclick="navigate('camera');return false;">
+                  Start Capturing
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-slide" id="slide-1">
+          <img class="carousel-img" src="9.jpg" alt="slide 2" loading="lazy"/>
+          <div class="carousel-overlay" style="background:linear-gradient(to right,rgba(128,0,0,.85),rgba(13,27,42,.92));"></div>
+          <div class="carousel-content">
+            <div class="container">
+              <div class="carousel-text">
+                <div class="carousel-badge"><span>2 / 3</span></div>
+                <h2 class="carousel-title">50+ Premium Frames</h2>
+                <p class="carousel-desc">From classic polaroid to neon glow, vintage sepia to elegant maroon — find the perfect frame to match your style.</p>
+                <a class="carousel-cta" href="#" onclick="navigate('camera');return false;">
+                  Browse Frames
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-slide" id="slide-2">
+          <img class="carousel-img" src="8.jpg" alt="slide 3" loading="lazy"/>
+          <div class="carousel-overlay" style="background:linear-gradient(to right,rgba(107,33,168,.85),rgba(13,27,42,.92));"></div>
+          <div class="carousel-content">
+            <div class="container">
+              <div class="carousel-text">
+                <div class="carousel-badge"><span>3 / 3</span></div>
+                <h2 class="carousel-title">Download &amp; Share</h2>
+                <p class="carousel-desc">Save your framed photos in high resolution, organize them in your personal gallery, and share with friends instantly.</p>
+                <a class="carousel-cta" href="#" onclick="navigate('camera');return false;">
+                  Try It Free
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel-arrow prev" onclick="carouselPrev()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="carousel-arrow next" onclick="carouselNext()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="carousel-dots">
+          <div class="carousel-dot" onclick="carouselGo(0)"><div class="carousel-dot-inner" id="dot-0"></div></div>
+          <div class="carousel-dot" onclick="carouselGo(1)"><div class="carousel-dot-inner" id="dot-1"></div></div>
+          <div class="carousel-dot" onclick="carouselGo(2)"><div class="carousel-dot-inner" id="dot-2"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ FEATURES — Learn more opens a Modal ═══ -->
+    <section id="features">
+      <div class="container">
+        <div class="text-center mb-4" style="margin-bottom:64px;">
+          <h2 class="section-title">Premium Features</h2>
+          <div class="section-divider mt-3"></div>
+        </div>
+        <div class="features-grid">
+
+          <!-- Feature 1 -->
+          <div class="feature-card card-lift">
+            <div class="feature-img-wrap">
+              <img src="2.jpg" alt="Instant Capture" loading="lazy"/>
+              <div class="feature-img-overlay"></div>
+              <div class="feature-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;color:white;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </div>
+            </div>
+            <div class="feature-body">
+              <h3 class="feature-title">Instant Capture</h3>
+              <p class="feature-desc">Snap photos with your webcam in seconds.</p>
+              <button class="feature-learn" onclick="openFeatureModal(0)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+                Learn more
+              </button>
+            </div>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-card card-lift">
+            <div class="feature-img-wrap">
+              <img src="3.jpg" alt="Beautiful Frames" loading="lazy"/>
+              <div class="feature-img-overlay"></div>
+              <div class="feature-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;color:white;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+            </div>
+            <div class="feature-body">
+              <h3 class="feature-title">Beautiful Frames</h3>
+              <p class="feature-desc">Choose from a curated collection of overlays.</p>
+              <button class="feature-learn" onclick="openFeatureModal(1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+                Learn more
+              </button>
+            </div>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="feature-card card-lift">
+            <div class="feature-img-wrap">
+              <img src="7.png" alt="Easy Download" loading="lazy"/>
+              <div class="feature-img-overlay"></div>
+              <div class="feature-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;color:white;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+            </div>
+            <div class="feature-body">
+              <h3 class="feature-title">Easy Download</h3>
+              <p class="feature-desc">Save your masterpiece in high resolution.</p>
+              <button class="feature-learn" onclick="openFeatureModal(2)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+                Learn more
+              </button>
+            </div>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="feature-card card-lift">
+            <div class="feature-img-wrap">
+              <img src="web_optimized_1200x800_97kb.jpg" alt="Personal Gallery" loading="lazy"/>
+              <div class="feature-img-overlay"></div>
+              <div class="feature-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;color:white;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+            </div>
+            <div class="feature-body">
+              <h3 class="feature-title">Personal Gallery</h3>
+              <p class="feature-desc">Organize and revisit your favorite shots.</p>
+              <button class="feature-learn" onclick="openFeatureModal(3)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+                Learn more
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Detail Modal -->
+    <div class="modal fade" id="featureModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content feature-modal-content">
+          <div class="modal-header feature-modal-header">
+            <div class="d-flex align-items-center gap-3">
+              <div class="feature-modal-icon" id="feat-modal-icon"></div>
+              <h5 class="modal-title feature-modal-title" id="feat-modal-title"></h5>
+            </div>
+            <button type="button" class="btn-close" id="feat-modal-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body feature-modal-body">
+            <div class="feature-modal-img-wrap">
+              <img id="feat-modal-img" src="" alt="" />
+            </div>
+            <div class="feature-modal-text">
+              <p id="feat-modal-desc" class="feature-modal-lead"></p>
+              <ul id="feat-modal-list" class="feature-modal-list"></ul>
+              <a href="#" class="btn-gradient feature-modal-cta" id="feat-modal-cta" onclick="closeFeatureModal();navigate('camera');return false;">
+                Try It Now →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <section id="stats">
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="stats-grid">
+          <div><div class="stat-num" id="stat-photos">0+</div><div class="stat-label">Photos Taken</div></div>
+          <div><div class="stat-num" id="stat-frames">0+</div><div class="stat-label">Unique Frames</div></div>
+          <div><div class="stat-num" id="stat-users">0+</div><div class="stat-label">Happy Users</div></div>
+          <div><div class="stat-num">24/7</div><div class="stat-label">Available</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS — icons show popover on click -->
+    <section id="how">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:64px;">
+          <h2 class="section-title">How It Works</h2>
+          <div class="section-divider" style="margin-top:16px;"></div>
+        </div>
+        <div style="position:relative;">
+          <div class="how-line"></div>
+          <div class="how-grid">
+
+            <!-- Step 1 -->
+            <div class="how-step">
+              <div class="how-icon-wrap how-icon-clickable" onclick="toggleHowPopover(0)" title="Click for details">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:40px;height:40px;color:var(--teal);"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <div class="how-step-num">1</div>
+                <!-- Popover -->
+                <div class="how-popover" id="how-pop-0">
+                  <div class="how-popover-title">Browse Gallery</div>
+                  <p>Explore our curated collection of photos from previous sessions. Filter by category — Nature, Portrait, Events, or Fun — for inspiration.</p>
+                  <button onclick="navigateGallery('All');event.stopPropagation();" class="how-popover-btn">Open Gallery →</button>
+                </div>
+              </div>
+              <h3>Browse Gallery</h3>
+              <p class="how-step-hint">Click icon for details</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="how-step">
+              <div class="how-icon-wrap how-icon-clickable" onclick="toggleHowPopover(1)" title="Click for details">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:40px;height:40px;color:var(--teal);"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                <div class="how-step-num">2</div>
+                <div class="how-popover" id="how-pop-1">
+                  <div class="how-popover-title">Take Your Photo</div>
+                  <p>Allow webcam access then choose Single or 2×2 Grid mode. Set your timer (3s, 5s, or 10s), pose, and the camera captures automatically!</p>
+                  <button onclick="navigate('camera');event.stopPropagation();" class="how-popover-btn">Start Camera →</button>
+                </div>
+              </div>
+              <h3>Take Photo</h3>
+              <p class="how-step-hint">Click icon for details</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="how-step">
+              <div class="how-icon-wrap how-icon-clickable" onclick="toggleHowPopover(2)" title="Click for details">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:40px;height:40px;color:var(--teal);"><polyline points="20 6 9 17 4 12"/></svg>
+                <div class="how-step-num">3</div>
+                <div class="how-popover" id="how-pop-2">
+                  <div class="how-popover-title">Pick a Frame</div>
+                  <p>After capturing, choose from 6 stylish frames: Classic White, Polaroid, Vintage Sepia, Neon Glow, Film Strip, or Elegant Maroon.</p>
+                  <button onclick="navigate('camera');event.stopPropagation();" class="how-popover-btn">Try Frames →</button>
+                </div>
+              </div>
+              <h3>Choose Frame</h3>
+              <p class="how-step-hint">Click icon for details</p>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="how-step">
+              <div class="how-icon-wrap how-icon-clickable" onclick="toggleHowPopover(3)" title="Click for details">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:40px;height:40px;color:var(--teal);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <div class="how-step-num">4</div>
+                <div class="how-popover" id="how-pop-3">
+                  <div class="how-popover-title">Download &amp; Save</div>
+                  <p>Download your framed photo as a high-resolution PNG, or save it directly to your personal gallery with a category tag for easy browsing later.</p>
+                  <button onclick="navigate('camera');event.stopPropagation();" class="how-popover-btn">Get Started →</button>
+                </div>
+              </div>
+              <h3>Download</h3>
+              <p class="how-step-hint">Click icon for details</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="container-md">
+        <div style="text-align:center;margin-bottom:64px;">
+          <div class="faq-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:32px;height:32px;color:var(--teal);"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12" y2="17"/></svg></div>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <div class="section-divider" style="margin-top:16px;"></div>
+        </div>
+        <div class="faq-list" id="faq-list"></div>
+      </div>
+    </section>
+
+    <!-- PLUGINS SHOWCASE -->
+    <section id="plugins-section">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:64px;">
+          <h2 class="section-title">Interactive Components Showcase</h2>
+          <p class="plugins-desc">A complete demonstration of Bootstrap-style plugins using Bootstrap 5 + custom vanilla JS.</p>
+          <div class="section-divider"></div>
+        </div>
+        <div class="plugins-grid">
+
+          <!-- 1. Alert (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+              1. Alert (Bootstrap)
+            </h3>
+            <div id="plugin-alert-wrap">
+              <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert" style="font-size:.875rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;margin-right:8px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+                Success! Action completed.
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Buttons (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+              2. Buttons (Bootstrap)
+            </h3>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-primary btn-sm">Primary</button>
+              <button class="btn btn-danger btn-sm">Danger</button>
+              <button class="btn btn-outline-info btn-sm">Outline</button>
+              <button class="btn btn-success btn-sm">Success</button>
+            </div>
+          </div>
+
+          <!-- 3. Mini Carousel -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+              3. Carousel
+            </h3>
+            <div class="mini-carousel" id="mini-carousel">
+              <img id="mini-carousel-img" src="https://picsum.photos/seed/1/600/300" alt="carousel" loading="lazy"/>
+              <div class="mini-carousel-overlay">
+                <button class="mini-carousel-btn" onclick="miniCarouselPrev(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <button class="mini-carousel-btn" onclick="miniCarouselNext(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Collapse (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+              4. Collapse (Bootstrap)
+            </h3>
+            <div class="accordion accordion-flush" id="bs-accordion">
+              <div class="accordion-item" style="border-radius:8px;overflow:hidden;margin-bottom:6px;border:1px solid rgba(0,0,0,.1);">
+                <h2 class="accordion-header">
+                  <button class="accordion-button py-2 px-3" style="font-size:.875rem;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                    Accordion Item 1
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#bs-accordion">
+                  <div class="accordion-body py-2 px-3" style="font-size:.8rem;">Smoothly animated using Bootstrap 5 collapse.</div>
+                </div>
+              </div>
+              <div class="accordion-item" style="border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,.1);">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed py-2 px-3" style="font-size:.875rem;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                    Accordion Item 2
+                  </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#bs-accordion">
+                  <div class="accordion-body py-2 px-3" style="font-size:.8rem;">Click to expand or collapse this item.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Dropdown (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+              5. Dropdown (Bootstrap)
+            </h3>
+            <div class="dropdown">
+              <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                Dropdown Menu
+              </button>
+              <ul class="dropdown-menu shadow">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#">Danger action</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 6. Modal (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+              6. Modal (Bootstrap)
+            </h3>
+            <button class="btn btn-outline-secondary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#bsModal">
+              Launch Demo Modal
+            </button>
+          </div>
+
+          <!-- 7. Offcanvas (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+              7. Offcanvas (Bootstrap)
+            </h3>
+            <button class="btn btn-primary btn-sm w-100" data-bs-toggle="offcanvas" data-bs-target="#bsOffcanvas">
+              Toggle Side Panel
+            </button>
+          </div>
+
+          <!-- 8. Tooltip (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+              8 &amp; 12. Tooltip (Bootstrap)
+            </h3>
+            <button class="btn btn-secondary btn-sm"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Bootstrap tooltip content!">
+              Hover Me
+            </button>
+          </div>
+
+           <!-- 9. Scrollspy (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              9. Scrollspy (Bootstrap)
+            </h3>
+            <p style="font-size:.8rem;color:#6b7280;margin-bottom:10px;">Active nav link highlights as you scroll through sections on the landing page.</p>
+            <div class="scrollspy-demo" id="scrollspy-demo">
+              <div class="scrollspy-nav">
+                <button class="scrollspy-btn active" id="spy-home" onclick="scrollspyNav('hero')">Home</button>
+                <button class="scrollspy-btn" id="spy-features" onclick="scrollspyNav('features')">Features</button>
+                <button class="scrollspy-btn" id="spy-how" onclick="scrollspyNav('how')">How It Works</button>
+                <button class="scrollspy-btn" id="spy-faq" onclick="scrollspyNav('faq')">FAQ</button>
+                <button class="scrollspy-btn" id="spy-contact" onclick="scrollspyNav('contact')">Contact</button>
+              </div>
+              <p style="font-size:.72rem;color:#9ca3af;margin-top:8px;">↑ Updates live as you scroll the page</p>
+            </div>
+          </div>
+
+          <!-- 10. Tabs (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+              10. Tabs (Bootstrap)
+            </h3>
+            <ul class="nav nav-tabs" id="bsTabNav" role="tablist" style="font-size:.875rem;">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active py-1 px-3" data-bs-toggle="tab" data-bs-target="#tab-home">Home</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link py-1 px-3" data-bs-toggle="tab" data-bs-target="#tab-profile">Profile</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link py-1 px-3" data-bs-toggle="tab" data-bs-target="#tab-contact">Contact</button>
+              </li>
+            </ul>
+            <div class="tab-content pt-2" style="font-size:.875rem;">
+              <div class="tab-pane fade show active" id="tab-home">Content for <strong>Home</strong> tab.</div>
+              <div class="tab-pane fade" id="tab-profile">Content for <strong>Profile</strong> tab.</div>
+              <div class="tab-pane fade" id="tab-contact">Content for <strong>Contact</strong> tab.</div>
+            </div>
+          </div>
+
+          <!-- 11. Toast (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              11. Toast (Bootstrap)
+            </h3>
+            <button class="btn btn-danger btn-sm w-100" onclick="showBsToast()">
+              Show Notification
+            </button>
+          </div>
+
+          <!-- 13. Spinners (Bootstrap) -->
+          <div class="plugin-card card-lift">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+              13. Spinners (Bootstrap)
+            </h3>
+            <div class="d-flex align-items-center justify-content-center gap-3" style="height:64px;">
+              <div class="spinner-border text-info" style="width:28px;height:28px;" role="status"><span class="visually-hidden">Loading...</span></div>
+              <div class="spinner-border text-danger" style="width:28px;height:28px;" role="status"><span class="visually-hidden">Loading...</span></div>
+              <div class="spinner-grow text-primary" style="width:20px;height:20px;" role="status"><span class="visually-hidden">Loading...</span></div>
+              <div class="spinner-grow text-success" style="width:20px;height:20px;" role="status"><span class="visually-hidden">Loading...</span></div>
+            </div>
+          </div>
+
+         
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="bsModal" tabindex="-1" aria-labelledby="bsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px;overflow:hidden;">
+          <div class="modal-header" style="border-bottom:1px solid rgba(0,0,0,.06);">
+            <h5 class="modal-title" id="bsModalLabel">Bootstrap Modal</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            This is a fully functional Bootstrap 5 modal with smooth entrance/exit animations powered by Bootstrap's JS bundle.
+          </div>
+          <div class="modal-footer" style="border-top:1px solid rgba(0,0,0,.06);">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="bsOffcanvas" aria-labelledby="bsOffcanvasLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="bsOffcanvasLabel">Side Panel</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <p>Offcanvas content goes here. Great for mobile menus, shopping carts, or settings panels.</p>
+        <p class="mt-3 text-muted" style="font-size:.875rem;">This is a Bootstrap 5 Offcanvas component with smooth slide-in animation.</p>
+      </div>
+    </div>
+
+    <!-- Bootstrap Toast (positioned top-end) -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1090;">
+      <div id="bsToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            🔔 Action completed successfully!
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plugin Toast container (custom, kept for non-Bootstrap plugin demo) -->
+    <div class="plugin-toast-container" id="plugin-toast-container"></div>
+
+    <!-- ═══ CONTACT — Bootstrap tooltips on hover/focus ═══ -->
+    <section id="contact">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h2 class="contact-title">Get In Touch</h2>
+            <p class="contact-desc">Have questions about our photo booth system? Want to request a custom frame? Send us a message and we'll get back to you shortly.</p>
+            <div class="contact-details">
+              <div class="contact-row"><div class="contact-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><h4>Email Us</h4><p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="88e0ede4e4e7c8f8e0e7fce7eae7e7fce0a6ebe7e5">[Aurora@gmail.com]</a></p></div></div>
+              <div class="contact-row"><div class="contact-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.9a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div><h4>Call Us</h4><p>+1 (555) 123-4567</p></div></div>
+              <div class="contact-row"><div class="contact-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><h4>Visit Us</h4><p>123 Creative Studio Blvd, NY</p></div></div>
+            </div>
+            <div class="social-row">
+              <a href="#" class="social-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+              <a href="#" class="social-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+              <a href="#" class="social-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            </div>
+          </div>
+
+          <div class="contact-form-wrap">
+            <form onsubmit="return false;" style="display:flex;flex-direction:column;gap:24px;">
+              <div class="form-grid">
+
+                <!-- Name field with BS tooltip on hover/focus -->
+                <div class="form-group">
+                  <label>Your Name</label>
+                  <input type="text" placeholder="John Doe" />
+                  <div class="bs-tooltip">Enter your full name</div>
+                </div>
+
+                <!-- Email field -->
+                <div class="form-group">
+                  <label>Your Email</label>
+                  <input type="email" placeholder="john@example.com" />
+                  <div class="bs-tooltip">We'll never share your email</div>
+                </div>
+
+              </div>
+
+              <!-- Subject field -->
+              <div class="form-group">
+                <label>Subject</label>
+                <input type="text" placeholder="How can we help?" />
+                <div class="bs-tooltip">Brief description of your inquiry</div>
+              </div>
+
+              <!-- Message field -->
+              <div class="form-group">
+                <label>Message</label>
+                <textarea rows="4" placeholder="Your message here..."></textarea>
+                <div class="bs-tooltip">Tell us more about your needs</div>
+              </div>
+
+              <button type="submit" class="btn-gradient" style="padding:16px;font-size:1.125rem;display:flex;align-items:center;justify-content:center;gap:8px;">
+                Send Message
+                <svg style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="footer-top-border"></div>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="footer-logo-text">Aurora<span>Booth</span></span></div>
+          <p class="footer-bio">Capture your perfect moments with our modern, professional photo booth experience.</p>
+          <div class="footer-social">
+            <a href="#" class="footer-social-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+            <a href="#" class="footer-social-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+            <a href="#" class="footer-social-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#" onclick="navigate('landing');return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>Home</a></li>
+            <li><a href="#" onclick="navigate('gallery');return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>Gallery</a></li>
+            <li><a href="#" onclick="navigate('camera');return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>Take Photo</a></li>
+            <li><a href="#" onclick="scrollToSection('plugins-section');return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>Components</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contact Us</h3>
+          <ul class="footer-contact-list">
+            <li class="footer-contact-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>123 Creative Studio Blvd,<br/>Design District, NY 10001</span></li>
+            <li class="footer-contact-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.9a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>+1 (555) 123-4567</span></li>
+            <li class="footer-contact-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e363b3232311e2e36312a313c31312a36703d3133">[Aurora@gmail.com]</a></span></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Newsletter</h3>
+          <div class="footer-newsletter">
+            <p>Subscribe for updates on new frames and features.</p>
+            <form onsubmit="return false;"><input type="email" placeholder="Your email address" required/><button type="submit" class="btn-gradient" style="width:100%;padding:12px;font-size:.875rem;">Subscribe</button></form>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="footer-year"></span> Aurora PhotoBooth. All rights reserved.</p>
+        <div class="footer-bottom-links"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     STEP 1: LAYOUT PICKER
+═══════════════════════════════════════════════ -->
+<div id="page-camera" class="page">
+  <main>
+    <!-- STEP 1: Choose Layout -->
+    <div id="step-layout" class="pb-step">
+      <div class="pb-step-bg"></div>
+      <div class="pb-layout-inner">
+        <button class="pb-back-btn" onclick="navigate('landing')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <div class="pb-layout-header">
+          <h2>choose your layout</h2>
+          <p>Select from our collection of photo booth layouts</p>
+        </div>
+
+        <!-- Timer row -->
+        <div class="pb-timer-row">
+          <span class="pb-timer-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Timer:
+          </span>
+          <div class="pb-timer-btns">
+            <button class="pb-timer-btn active" onclick="setTimerUI(this,0)">Off</button>
+            <button class="pb-timer-btn" onclick="setTimerUI(this,3)">3s</button>
+            <button class="pb-timer-btn" onclick="setTimerUI(this,5)">5s</button>
+            <button class="pb-timer-btn" onclick="setTimerUI(this,10)">10s</button>
+          </div>
+        </div>
+
+        <!-- Layout carousel -->
+        <div class="pb-layouts-track-wrap">
+          <button class="pb-layouts-arrow" onclick="layoutCarouselPrev()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="pb-layouts-viewport" id="layouts-viewport">
+            <div class="pb-layouts-track" id="layouts-track"></div>
+          </div>
+          <button class="pb-layouts-arrow" onclick="layoutCarouselNext()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Camera Capture -->
+    <div id="step-capture" class="pb-step" style="display:none;">
+      <div class="pb-capture-wrap">
+        <!-- Left: live camera -->
+        <div class="pb-capture-left">
+          <div class="pb-capture-topbar">
+            <button class="pb-back-btn" onclick="goToLayoutPicker()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              Change Layout
+            </button>
+            <div class="pb-capture-layout-name" id="capture-layout-name"></div>
+          </div>
+          <div class="pb-camera-view" id="pb-camera-view">
+            <div class="camera-flash" id="camera-flash"></div>
+            <div class="camera-countdown" id="camera-countdown"><span id="countdown-num"></span></div>
+            <div class="camera-status camera-loading" id="camera-loading">
+              <div class="spinner spinner-teal" style="width:48px;height:48px;margin-bottom:16px;"></div>
+              <p>Initializing camera...</p>
+            </div>
+            <div class="camera-status camera-error" id="camera-error" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+              <p id="camera-error-msg" style="margin-bottom:16px;"></p>
+              <button class="btn-outline" style="padding:8px 24px;" onclick="startCamera()">Try Again</button>
+            </div>
+            <video id="camera-video" autoplay playsinline muted></video>
+            <!-- Progress overlay -->
+            <div class="pb-capture-progress" id="pb-capture-progress" style="display:none;">
+              <div class="pb-progress-bar-wrap"><div class="pb-progress-bar" id="pb-progress-bar"></div></div>
+              <span id="pb-progress-text"></span>
+            </div>
+          </div>
+          <!-- Shutter -->
+          <div class="pb-shutter-row" id="pb-shutter-row">
+            <button class="shutter-btn" id="shutter-btn" onclick="takePicture()">
+              <div class="shutter-ring animate-pulse-glow"></div>
+              <div class="shutter-inner">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </div>
+            </button>
+            <div class="pb-shot-hint" id="pb-shot-hint">Tap to take photo</div>
+            <button class="pb-proceed-btn" id="pb-proceed-btn" style="display:none;" onclick="goToCustomize()">
+              Customize Photo →
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: filmstrip of captured shots -->
+        <div class="pb-filmstrip" id="pb-filmstrip">
+          <div class="pb-filmstrip-label">Photos</div>
+          <div class="pb-filmstrip-slots" id="pb-filmstrip-slots"></div>
+          <div class="pb-filmstrip-remaining" id="pb-filmstrip-remaining"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Customize -->
+    <div id="step-customize" class="pb-step" style="display:none;">
+      <div class="pb-customize-wrap">
+        <!-- Left: live preview of final strip -->
+        <div class="pb-customize-preview-col">
+          <div class="pb-customize-preview-frame">
+            <canvas id="pb-preview-canvas"></canvas>
+          </div>
+        </div>
+        <!-- Right: controls -->
+        <div class="pb-customize-controls">
+          <div class="pb-cust-topbar">
+            <h2>customize your photo</h2>
+            <button class="pb-back-btn" onclick="goToCaptureStep()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              Retake
+            </button>
+          </div>
+
+          <!-- Frame Color -->
+          <div class="pb-cust-section">
+            <div class="pb-cust-label">Frame Color</div>
+            <div class="pb-color-grid" id="pb-color-grid"></div>
+          </div>
+
+          <!-- Photo Shape -->
+          <div class="pb-cust-section">
+            <div class="pb-cust-label">Photo Shape:</div>
+            <div class="pb-shape-row">
+              <button class="pb-shape-btn" data-shape="none" onclick="setPhotoShape(this,'none')" title="None">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+              </button>
+              <button class="pb-shape-btn" data-shape="square" onclick="setPhotoShape(this,'square')" title="Square">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              </button>
+              <button class="pb-shape-btn active" data-shape="circle" onclick="setPhotoShape(this,'circle')" title="Circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+              </button>
+              <button class="pb-shape-btn" data-shape="heart" onclick="setPhotoShape(this,'heart')" title="Heart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Stickers -->
+          <div class="pb-cust-section">
+            <div class="pb-cust-label">Stickers</div>
+            <div class="pb-sticker-grid" id="pb-sticker-grid"></div>
+          </div>
+
+          <!-- Logo -->
+          <div class="pb-cust-section">
+            <div class="pb-cust-label">Logo:</div>
+            <div class="pb-logo-row">
+              <button class="pb-logo-btn active" onclick="setLogo(this,'photobooth')">ENG</button>
+              <button class="pb-logo-btn" onclick="setLogo(this,'포토부스')">KOR</button>
+              <button class="pb-logo-btn" onclick="setLogo(this,'照相馆')">CN</button>
+              <button class="pb-logo-btn" onclick="setLogo(this,'')">None</button>
+            </div>
+          </div>
+
+          <!-- Date / Time -->
+          <div class="pb-cust-section">
+            <label class="pb-check-label"><input type="checkbox" id="chk-date" checked onchange="renderCustomizePreview()"> Add Date</label>
+            <label class="pb-check-label"><input type="checkbox" id="chk-time" checked onchange="renderCustomizePreview()"> Add Time</label>
+          </div>
+
+          <!-- Actions -->
+          <div class="pb-cust-actions">
+            <button class="pb-dl-btn" onclick="downloadCustomized()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download
+            </button>
+            <div class="category-dropdown">
+              <button id="save-btn" class="pb-save-btn" onclick="toggleCategoryMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <span id="save-btn-text">Save to Gallery</span>
+                <svg id="save-btn-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="category-menu" id="category-menu">
+                <div class="category-header-row">Select Category</div>
+                <button class="category-item" onclick="saveToGallery('Nature')">Nature</button>
+                <button class="category-item" onclick="saveToGallery('Portrait')">Portrait</button>
+                <button class="category-item" onclick="saveToGallery('Events')">Events</button>
+                <button class="category-item" onclick="saveToGallery('Fun')">Fun</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- (old frames page removed — replaced by step-customize above) -->
+
+<!-- ═══════════════════════════════════════════════
+     GALLERY PAGE
+═══════════════════════════════════════════════ -->
+<div id="page-gallery" class="page">
+  <main>
+    <div id="gallery-page">
+      <div class="gallery-inner">
+        <div class="gallery-header">
+          <h1>Photo Gallery</h1>
+          <div class="section-divider" style="margin:0 auto 24px;"></div>
+          <p>Browse our collection of amazing photo booth shots. Get inspired for your own session!</p>
+        </div>
+        <div class="gallery-tabs" id="gallery-tabs"></div>
+        <div class="gallery-bento" id="gallery-bento"></div>
+        <div class="gallery-cta">
+          <div class="gallery-cta-overlay"></div>
+          <h2>Ready to Create Your Own?</h2>
+          <p>Step into our virtual photo booth and capture your perfect moment with custom frames and effects.</p>
+          <a class="btn-gradient animate-pulse-glow" style="display:inline-flex;align-items:center;" href="#" onclick="navigate('camera');return false;"><svg style="width:24px;height:24px;margin-right:12px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Take Your Picture Now</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ GALLERY LIGHTBOX — image + right side details panel ═══ -->
+<div id="lightbox" onclick="closeLightboxOutside(event)">
+  <!-- Close -->
+  <button class="lightbox-close" onclick="closeLightbox()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <!-- Prev -->
+  <button class="lightbox-prev" onclick="lightboxPrev(event)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+
+  <!-- Main content -->
+  <div class="lightbox-layout" onclick="event.stopPropagation()">
+    <!-- Left: Image -->
+    <div class="lightbox-img-side">
+      <img id="lightbox-img" src="" alt=""/>
+      <div class="lightbox-counter-badge" id="lightbox-counter"></div>
+    </div>
+    <!-- Right: Details panel -->
+    <div class="lightbox-details-panel">
+      <div class="lbd-header">
+        <span class="lbd-category" id="lbd-category"></span>
+        <span class="lbd-badge" id="lbd-frame-badge"></span>
+      </div>
+      <h4 class="lbd-title">Photo Details</h4>
+      <div class="lbd-info-list">
+        <div class="lbd-info-row">
+          <span class="lbd-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </span>
+          <div>
+            <div class="lbd-info-label">Date Captured</div>
+            <div class="lbd-info-value" id="lbd-date">—</div>
+          </div>
+        </div>
+        <div class="lbd-info-row">
+          <span class="lbd-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <div>
+            <div class="lbd-info-label">Time Captured</div>
+            <div class="lbd-info-value" id="lbd-time">—</div>
+          </div>
+        </div>
+        <div class="lbd-info-row">
+          <span class="lbd-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </span>
+          <div>
+            <div class="lbd-info-label">Category</div>
+            <div class="lbd-info-value" id="lbd-cat-text">—</div>
+          </div>
+        </div>
+        <div class="lbd-info-row">
+          <span class="lbd-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </span>
+          <div>
+            <div class="lbd-info-label">Frame Style</div>
+            <div class="lbd-info-value" id="lbd-frame-text">—</div>
+          </div>
+        </div>
+        <div class="lbd-info-row" id="lbd-source-row">
+          <span class="lbd-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </span>
+          <div>
+            <div class="lbd-info-label">Source</div>
+            <div class="lbd-info-value" id="lbd-source">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="lbd-actions">
+        <button class="lbd-btn-download" id="lbd-download-btn" onclick="lightboxDownload()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Photo
+        </button>
+        <button class="lbd-btn-delete" id="lbd-delete-btn" onclick="lightboxDelete()" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Delete Photo
+        </button>
+      </div>
+
+      <!-- Confirm delete -->
+      <div class="lbd-confirm-delete" id="lbd-confirm-delete" style="display:none;">
+        <p>Are you sure you want to delete this photo?</p>
+        <div class="lbd-confirm-btns">
+          <button class="lbd-confirm-yes" onclick="lightboxConfirmDelete()">Yes, Delete</button>
+          <button class="lbd-confirm-no" onclick="lightboxCancelDelete()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next -->
+  <button class="lightbox-next" onclick="lightboxNext(event)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
+
+<!-- FAB -->
+<a id="fab" class="btn-gradient animate-pulse-glow" href="#" onclick="navigate('camera');return false;" aria-label="Take Photo">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+</a>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+<!-- Bootstrap Tooltip Init + BS Toast helper -->
+<script>
+  // Initialize all Bootstrap tooltips
+  document.addEventListener('DOMContentLoaded', function () {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (el) {
+            new bootstrap.Tooltip(el, { trigger: 'hover focus' });
+    });
+  });
+
+  // Show Bootstrap Toast
+  function showBsToast(msg, type) {
+    const container = document.getElementById('toast-container');
+    const id = 'toast-' + Date.now();
+    const bg = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-info';
+    container.insertAdjacentHTML('beforeend', `
+      <div id="${id}" class="toast align-items-center text-white ${bg} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+        <div class="d-flex">
+          <div class="toast-body">${msg}</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>`);
+    const toastEl = document.getElementById(id);
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+  }
+</script>
+
+<!-- Custom JS -->
+<script src="script.js"></script>
+
+</body>
+</html>
